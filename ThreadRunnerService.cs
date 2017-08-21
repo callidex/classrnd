@@ -8,21 +8,16 @@ namespace Utilities
     {
         public void QueueExecution(Action work)
         {
-            Task.Factory
-                .StartNew(work);
+            Task.Factory.StartNew(work);
         }
         public void QueueExecution(Action work, Action completionCallback)
         {
-            Task.Factory
-                .StartNew(work)
-                .ContinueWith(_ => completionCallback(), TaskScheduler.FromCurrentSynchronizationContext());
+            Task.Factory.StartNew(work).ContinueWith(_ => completionCallback(), TaskScheduler.FromCurrentSynchronizationContext());
         }
 
         public void QueueExecution(Action work, Action completionCallback, Action<Exception> errorCallback)
         {
-            Task.Factory
-                .StartNew(work)
-                .ContinueWith(task =>
+            Task.Factory.StartNew(work).ContinueWith(task =>
                 {
                     if (task.Status == TaskStatus.Faulted)
                     {
