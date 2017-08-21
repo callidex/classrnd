@@ -9,6 +9,13 @@ namespace Utilities
     /// <summary>
     /// Class NotifyingViewModel  Lowest level of standard viewmodel
     /// </summary>
+    /// <usage>
+    ///  public Type PropName
+    ///  {
+    ///     get => _privatePropName;
+    ///     set => SetPropertyValue(ref _privatePropName, value);
+    ///  }
+    /// </usage>
     public class NotifyingViewModel : ViewModelBase
     {
         protected bool SetPropertyValue<T>(ref T field, T value, [CallerMemberName] string propName = null)
