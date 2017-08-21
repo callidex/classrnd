@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 
-namespace GNT.Business.Utils
+namespace Utilities
 {
 
     // getting a bit sick of the longwinded way of getting an attribute
