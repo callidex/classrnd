@@ -2,6 +2,6 @@
 {
     public enum Gene
     {
-        G=0,A,C,T
+        A=0,B,C,D,E,F,G,H,I,J,K
     }
 }

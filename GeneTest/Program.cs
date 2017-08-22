@@ -6,12 +6,14 @@ namespace GeneTest
 {
     internal class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
-            var generations = 1000;
-            var a = new Genome(100);
-            var b = new Genome(100);
-            Genome c = a.Mate(b);
+            var generations = 500000;
+            var a = OrganismFactory<Organism>.CreateByDivineIntervention();
+            a.Name = "Frank";
+            var b = OrganismFactory<Organism>.CreateByDivineIntervention();
+            b.Name = "Mary";
+            var  c = a.Mate(b);
             Console.WriteLine("First Child");
             c.Dump();
             for (var i = 0; i < generations; i++)

@@ -13,7 +13,7 @@ namespace Genetics
 
         private static int MaxGene()
         {
-            return (int) Enum.GetValues(typeof(Gene)).Cast<Gene>().Max();
+            return  Enum.GetValues(typeof(Gene)).Length;
         }
 
         private readonly List<Gene> _genes = new List<Gene>();
@@ -23,7 +23,12 @@ namespace Genetics
             var r = new Random(DateTime.Now.Millisecond);
 
             for (var i = 0; i < geneCount; i++)
-                _genes.Add((Gene) (r.Next() % MaxGene()));
+            {
+                var v = r.Next(MaxGene());
+                _genes.Add((Gene)v); 
+                
+            }
+
         }
 
         public Genome()
@@ -33,8 +38,9 @@ namespace Genetics
 
         public void Dump()
         {
+            Console.WriteLine();
             _genes.ForEach(x => Console.Write(x));
-            Console.WriteLine($"{MutationCount} mutations");
+            Console.WriteLine($"  -  {MutationCount} mutations");
 
         }
 
@@ -53,18 +59,18 @@ namespace Genetics
             var min = Math.Min(child._genes.Count, _genes.Count);
             var r = new Random(DateTime.Now.Millisecond);
 
-            for (var i = 0; i < min; i++)
+            for (var i = 0; i < min; i++)    // compare in blocks of 2 (make it interesting)
             {
                 var ra = r.Next();
                 if (ra % MaxRand > MaxRand / 2)
                 {
                     child._genes[i] = _genes[i];
+     
                 }
                 if (ra % MaxRand > MaxRand - DefectRate)
                 {
                     MutationCount++;
-                    var newg = (int) child._genes[i];
-                    child._genes[i] = (Gene) (++newg % MaxGene());
+                    child._genes[i] = (Gene) (ra % MaxGene());
                 }
                 if (ra % MaxRand < 5)
                 {
@@ -111,6 +117,4 @@ namespace Genetics
     {
         
     }
-
-
 }
