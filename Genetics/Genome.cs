@@ -6,20 +6,26 @@ namespace Genetics
 {
     public class Genome
     {
-        private int MaxGene()
+        private static int MutationCount;
+
+        public int DefectRate = 5;
+        private const int MaxRand = 100;
+
+        private static int MaxGene()
         {
-            return (int)Enum.GetValues(typeof(Gene)).Cast<Gene>().Max();
+            return (int) Enum.GetValues(typeof(Gene)).Cast<Gene>().Max();
         }
 
-        private List<Gene> _genes = new List<Gene>();
+        private readonly List<Gene> _genes = new List<Gene>();
 
         public Genome(int geneCount)
         {
             var r = new Random(DateTime.Now.Millisecond);
 
-            for (int i=0;i<geneCount;i++)
+            for (var i = 0; i < geneCount; i++)
                 _genes.Add((Gene) (r.Next() % MaxGene()));
         }
+
         public Genome()
         {
         }
@@ -27,10 +33,11 @@ namespace Genetics
 
         public void Dump()
         {
-            _genes.ForEach(x=>Console.Write(x));
-            Console.WriteLine();
-            
+            _genes.ForEach(x => Console.Write(x));
+            Console.WriteLine($"{MutationCount} mutations");
+
         }
+
         public void AddGene(Gene g)
         {
             _genes.Add(g);
@@ -38,38 +45,37 @@ namespace Genetics
 
         public Genome Mate(Genome mate)
         {
-            Genome child = Clone(mate);
+            // first method, copy all from mate, then cross
+            //var child = Clone(mate);
+            var child = Clone(mate, this);
 
             // new blend (allow for cross species)
             var min = Math.Min(child._genes.Count, _genes.Count);
             var r = new Random(DateTime.Now.Millisecond);
-            
-            for (int i = 0; i < min;i++)
+
+            for (var i = 0; i < min; i++)
             {
-                int ra = r.Next();
-                if (ra % 50 > 25)
+                var ra = r.Next();
+                if (ra % MaxRand > MaxRand / 2)
                 {
-                    child._genes[i] = this._genes[i];
+                    child._genes[i] = _genes[i];
                 }
-                if (ra % 50 > 45)
+                if (ra % MaxRand > MaxRand - DefectRate)
                 {
-                    Console.WriteLine("Mutation!");
-                    int newg = (int)child._genes[i] ;
-                    child._genes[i] =(Gene) (++newg% MaxGene()); 
+                    MutationCount++;
+                    var newg = (int) child._genes[i];
+                    child._genes[i] = (Gene) (++newg % MaxGene());
                 }
-                if (ra % 50 == 48)
+                if (ra % MaxRand < 5)
                 {
                     // lose a gene
-                    Console.WriteLine("Lost one!");
                     child._genes.RemoveAt(i);
                     min--;
                 }
-                if (ra % 50 == 49)
+                else if (ra % MaxRand < 10)
                 {
                     // gain a gene
-                    Console.WriteLine("Gained one!");
-                    child._genes.Add((Gene)(ra % MaxGene()));
-                    
+                    child._genes.Add((Gene) (ra % MaxGene()));
                 }
 
             }
@@ -77,17 +83,34 @@ namespace Genetics
         }
 
 
-        public static Genome Clone(Genome me)
+        private static Genome Clone(Genome me)
         {
-            Genome newChild = new Genome();
+            var newChild = new Genome();
             newChild._genes.AddRange(me._genes);
             return newChild;
         }
 
+        private static Genome Clone(Genome me, Genome other)
+        {
+            var newChild = new Genome();
+            var min = Math.Min(me._genes.Count, other._genes.Count);
+            var r = new Random(DateTime.Now.Millisecond);
+            for (var i = 0; i < min; i++)
+            {
+                newChild.AddGene(r.Next(2)==1 ? me._genes[i] : other._genes[i]);
+                
+            }
+            return newChild;
+        }
+
+        // Note:
+        // genes denote modifiers against natural abilities of organism
     }
 
-    public enum Gene
+    public enum ModifierRank
     {
-        G=0,A,C,T
+        
     }
+
+
 }
