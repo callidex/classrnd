@@ -1,14 +1,25 @@
 ﻿using System;
-using System.Collections.Generic;
 using Genetics;
 
 namespace GeneTest
 {
+    public class Solution
+    {
+        public int Fitness()
+        {
+
+            // not fit at all
+            return 0;
+        }
+    }
+
+
     internal class Program
     {
         private static void Main(string[] args)
         {
             var generations = 500000;
+            OrganismFactory<Organism>.GeneCount = 1000;
             var a = OrganismFactory<Organism>.CreateByDivineIntervention();
             a.Name = "Frank";
             var b = OrganismFactory<Organism>.CreateByDivineIntervention();
